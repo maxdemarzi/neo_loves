@@ -1,21 +1,28 @@
-Sample Neo4j unmanaged extension
-================================
+Neo4j Dating Site with Location
+===============================
 
-This is an unmanaged extension. 
+This is a Neo4j sample Dating Site with Location.
 
-1. Build it: 
+1. Install Required Gems:
 
-        mvn clean package
+        bundle
 
-2. Copy target/unmanaged-extension-template-1.0.jar to the plugins/ directory of your Neo4j server.
+2. Install Neo4j and Neo4j Spatial:
 
-3. Configure Neo4j by adding a line to conf/neo4j-server.properties:
+        rake neo4j:install
+        rake neo4j:get_spatial
 
-        org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.example.unmanagedextension=/example
+3. Install Unmanaged extension (see directions in unmanaged folder)
 
-4. Start Neo4j server.
+4. Load Data:
 
-5. Query it over HTTP:
+        rake neo4j:import
 
-        curl http://localhost:7474/example/service/helloworld
+5. Start Neo4j server.
+
+        rake neo4j:start
+
+6. Start Application Server
+
+        rackup
 
