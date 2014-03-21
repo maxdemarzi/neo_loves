@@ -29,20 +29,25 @@ class Tasks
       next unless row.has_key?("Latitude") && row.has_key?("Longitude")
       next if (row["Latitude"].nil? && row["Longitude"].nil?)
       next if (row["Latitude"].strip == "" )  || (row["Longitude"].strip == "" )
-      shop[:latitude]  = row["Latitude"]
-      shop[:longitude] = row["Longitude"]
-      shop[:name]      = row["Name"]
-      shop[:address]   = row["Street Combined"]
-      shop[:city]      = row["City"]
-      shop[:state]     = row["Country Subdivision"]
-      shop[:country]   = row["Country"]
-      shop[:zip]       = row["Postal Code"]
+      shop = Hash.new
+      shop[:latitude]  = row["Latitude"].to_f
+      shop[:longitude] = row["Longitude"].to_f
+      shop[:name]      = row["Name"] || ""
+      shop[:address]   = row["Street Combined"] || ""
+      shop[:city]      = row["City"] || ""
+      shop[:state]     = row["Country Subdivision"] || ""
+      shop[:country]   = row["Country"] || ""
+      shop[:zip]       = row["Postal Code"] || ""
       queue << [:create_node, shop]
       queue << [:add_node_to_spatial_index, "CoffeeShops", "{#{counter}}"]
       counter += 2
 
-      if counter / 1000 == 0
+      if counter % 10 == 0
+        puts counter
+        puts queue
         @neo.batch *queue
+        queue = []
+        counter = 0
       end
     end
 
