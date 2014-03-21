@@ -1,3 +1,5 @@
+.bundle/
 .DS_Store
 /neo4j
-
+*.iml
+.idea
