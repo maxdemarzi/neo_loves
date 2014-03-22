@@ -139,7 +139,7 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldQueryDbForFriends() throws IOException {
+    public void shouldQueryDbForLoves1() throws IOException {
         Response response = service.getLoves("P1", db);
 
         List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
@@ -156,8 +156,80 @@ public class MyServiceTest {
         expected.add(result);
 
         assertEquals(expected, actual);
-
     }
+
+    @Test
+    public void shouldQueryDbForLoves2() throws IOException {
+        Response response = service.getLoves("P2", db);
+
+        List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
+        List<HashMap<String, Object>> expected = new ArrayList<>();
+        HashMap<String, Object> result = new HashMap<String, Object>(){{
+            put("location", "L1");
+            put("name", "P1");
+            put("matching_wants", 2);
+            put("matching_has", 1);
+            put("my_interests", Arrays.asList("T1", "T3"));
+            put("their_interests", Arrays.asList("T5"));
+
+        }};
+        expected.add(result);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldQueryDbForLoves3() throws IOException {
+        Response response = service.getLoves("P3", db);
+
+        List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
+        List<HashMap<String, Object>> expected = new ArrayList<>();
+        HashMap<String, Object> result = new HashMap<String, Object>(){{
+            put("location", "L2");
+            put("name", "P5");
+            put("matching_wants", 2);
+            put("matching_has", 3);
+            put("my_interests", Arrays.asList("T4", "T5"));
+            put("their_interests", Arrays.asList("T1", "T3", "T4"));
+
+        }};
+
+        HashMap<String, Object> result2 = new HashMap<String, Object>(){{
+            put("location", "L2");
+            put("name", "P4");
+            put("matching_wants", 1);
+            put("matching_has", 2);
+            put("my_interests", Arrays.asList("T5"));
+            put("their_interests", Arrays.asList("T1", "T4"));
+
+        }};
+        expected.add(result);
+        expected.add(result2);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldQueryDbForLoves4() throws IOException {
+        Response response = service.getLoves("P4", db);
+
+        List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
+        List<HashMap<String, Object>> expected = new ArrayList<>();
+        HashMap<String, Object> result = new HashMap<String, Object>(){{
+            put("location", "L2");
+            put("name", "P3");
+            put("matching_wants", 2);
+            put("matching_has", 1);
+            put("my_interests", Arrays.asList("T1", "T4"));
+            put("their_interests", Arrays.asList("T5"));
+
+        }};
+
+        expected.add(result);
+
+        assertEquals(expected, actual);
+    }
+
 
     static HashMap<String, Object> person1Hash = new HashMap<String, Object>(){{
         put("name","P1");

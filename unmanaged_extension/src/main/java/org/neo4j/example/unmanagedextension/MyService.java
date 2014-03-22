@@ -55,6 +55,9 @@ public class MyService {
 
                 for(Relationship lives_in_too : location.getRelationships(RelationshipTypes.LIVES_IN, Direction.INCOMING)){
                     Node person = lives_in_too.getStartNode();
+                    if(person.equals(user)){
+                        continue;
+                    }
 
                     if((myOrientation == "straight") ^ (myGender == person.getProperty("gender") )){
                         people.add(person);
@@ -84,18 +87,18 @@ public class MyService {
                 String locationName = (String) location.getProperty("name");
 
                 for (Node person : people){
-                    HashMap<String, Object> result = new HashMap<>();
-                    result.put("location", locationName);
-                    result.put("name", person.getProperty("name"));
-                    result.put("my_interests", peopleHave.get(person));
-                    result.put("their_interests", peopleWant.get(person));
-                    result.put("matching_wants", peopleHave.get(person).size());
-                    result.put("matching_has", peopleWant.get(person).size());
-                    results.add(result);
+                    if(peopleHave.get(person).size() > 0 && peopleWant.get(person).size() > 0){
+                        HashMap<String, Object> result = new HashMap<>();
+                        result.put("location", locationName);
+                        result.put("name", person.getProperty("name"));
+                        result.put("my_interests", peopleHave.get(person));
+                        result.put("their_interests", peopleWant.get(person));
+                        result.put("matching_wants", peopleHave.get(person).size());
+                        result.put("matching_has", peopleWant.get(person).size());
+                        results.add(result);
+                    }
                 }
-
             }
-
         }
 
         Collections.sort(results, resultComparator);
