@@ -4,7 +4,7 @@ require './tasks'
 namespace :neo4j do
 
   task :import do
-    Tasks.new.import
+    Tasks.import
   end
 
 end

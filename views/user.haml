@@ -1,0 +1,27 @@
+.container
+  .content
+    .row
+      %h2="Had this been a real application you would be able to contact #{@user}."
+      %br
+      %i 
+        Alas, it's just a sample project, so 
+        lets see the 
+        %a{:href=>"/"} love matches
+        of another user.
+    .row
+      %table{:class => "table table-striped"}
+        %tr
+          %th Wants
+          %th Has	
+        - @wants_and_has.each_with_index do |wh, index|
+          %tr
+            %td
+              - wh[0].each_with_index do |att, index|
+                %a.btn.btn-success
+                  %i.icon-ok.icon-white
+                  =att
+            %td
+              - wh[1].each do |att|
+                %a.btn.btn-success
+                  %i.icon-ok.icon-white
+                  =att

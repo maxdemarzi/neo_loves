@@ -4,15 +4,17 @@ source 'https://rubygems.org'
 gem 'thin'
 
 # Sinatra
-gem 'sinatra', :require => 'sinatra/base'
+gem 'sinatra'
+gem 'sinatra-contrib'
+gem 'sinatra-assetpack', :require => 'sinatra/assetpack'
 gem 'tilt', '~> 1.4.1'
 
 # Databases
 gem 'neography'
 
 # Template
-gem 'slim'
+gem 'haml'
 
 # Others
 gem 'oj'
-gem 'glutton_ratelimit'
+
