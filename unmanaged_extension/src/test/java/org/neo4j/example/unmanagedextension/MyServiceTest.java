@@ -1,18 +1,13 @@
 package org.neo4j.example.unmanagedextension;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.schema.IndexDefinition;
 import org.neo4j.graphdb.schema.Schema;
-import org.neo4j.test.ImpermanentGraphDatabase;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -20,18 +15,18 @@ import static org.junit.Assert.assertEquals;
 
 public class MyServiceTest {
 
-    private GraphDatabaseService db;
-    private MyService service;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static GraphDatabaseService db;
+    private static MyService service;
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         db = new TestGraphDatabaseFactory().newImpermanentDatabase();
         populateDb(db);
         service = new MyService();
     }
 
-    private void populateDb(GraphDatabaseService db) {
+    private static void populateDb(GraphDatabaseService db) {
         IndexDefinition locationIndexDefinition;
         IndexDefinition personIndexDefinition;
         IndexDefinition thingIndexDefinition;
@@ -115,7 +110,7 @@ public class MyServiceTest {
 
     }
 
-    private Node createNode(GraphDatabaseService db, HashMap<String, Object> values, String type) {
+    private static Node createNode(GraphDatabaseService db, HashMap<String, Object> values, String type) {
         Label label = DynamicLabel.label(type);
 
         Node node = db.createNode(label);
@@ -127,10 +122,9 @@ public class MyServiceTest {
         return node;
     }
 
-    @After
-    public void tearDown() throws Exception {
-        db.shutdown();
-
+    @AfterClass
+    public static void tearDown() throws Exception {
+        //db.shutdown();
     }
 
     @Test
@@ -139,7 +133,7 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldQueryDbForLoves1() throws IOException {
+    public void shouldQueryDbForLoves1() throws Exception {
         Response response = service.getLoves("P1", db);
 
         List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
@@ -159,7 +153,7 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldQueryDbForLoves2() throws IOException {
+    public void shouldQueryDbForLoves2() throws Exception {
         Response response = service.getLoves("P2", db);
 
         List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
@@ -179,7 +173,7 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldQueryDbForLoves3() throws IOException {
+    public void shouldQueryDbForLoves3() throws Exception {
         Response response = service.getLoves("P3", db);
 
         List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);
@@ -210,7 +204,7 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldQueryDbForLoves4() throws IOException {
+    public void shouldQueryDbForLoves4() throws Exception {
         Response response = service.getLoves("P4", db);
 
         List<HashMap<String, Object>> actual = objectMapper.readValue((String)response.getEntity(), List.class);

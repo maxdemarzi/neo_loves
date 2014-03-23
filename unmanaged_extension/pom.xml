@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>unmanaged-extension-template</groupId>
-    <artifactId>unmanaged-extension-template</artifactId>
+    <artifactId>neoLoves</artifactId>
     <version>1.0</version>
 
     <properties>
-        <neo4j.version>2.0.1</neo4j.version>
+        <neo4j.version>2.0.0</neo4j.version>
     </properties>
 
     <build>
@@ -62,6 +62,11 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0.1</version>
         </dependency>
     </dependencies>
     

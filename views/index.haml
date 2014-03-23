@@ -20,19 +20,19 @@
         - @loves.each_with_index do |love, index|
           %tr
             %td
-              %a{:href => "/user/#{love[1]}"} 
-                = love[1]
+              %a{:href => "/user/#{love["name"]}"} 
+                = love["name"]
               in 
-              %i= love[0]
+              %i= love["location"]
             %td
-              = love[4] / (1.0 / love[5])
+              = love["matching_wants"] / (1.0 / love["matching_has"])
             %td
-              - love[2].each do |att|
+              - love["my_interests"].each do |att|
                 %a.btn.btn-success
                   %i.icon-ok.icon-white
                   =att
             %td
-              - love[3].each do |att|
+              - love["their_interests"].each do |att|
                 %a.btn.btn-success
                   %i.icon-ok.icon-white
                   =att

@@ -15,34 +15,16 @@ class NeoLoves < Sinatra::Application
   
   get '/' do
     @user = (settings.guys + settings.girls).sample
-
-    cypher = "
-              MATCH (me:Person {name: {user}})-[:lives_in]->city<-[:lives_in]-person
-              WHERE me.orientation = person.orientation AND
-                  ((me.gender <> person.gender AND me.orientation = \"straight\") OR
-                   (me.gender = person.gender AND me.orientation = \"gay\")) AND
-                    me-[:wants]->()<-[:has]-person AND 
-                    me-[:has]->()<-[:wants]-person
-              WITH DISTINCT city.name AS city_name, person, me
-              MATCH  me-[:wants]->attributes<-[:has]-person-[:wants]->requirements<-[:has]-me
-              RETURN city_name, person.name AS person_name,
-                     COLLECT(DISTINCT attributes.name) AS my_interests,
-                     COLLECT(DISTINCT requirements.name) AS their_interests,
-                     COUNT(DISTINCT attributes) AS matching_wants, 
-                    COUNT(DISTINCT requirements) AS matching_has
-              ORDER BY matching_wants / (1.0 / matching_has) DESC
-              LIMIT 10"                                  
-                        
-    @loves = $neo.execute_query(cypher, {:user => @user})["data"]   
+    @loves = $neo.get_extension("/example/service/loves/#{@user}")
     haml :index
   end
   
   get '/user/:user' do
     @user = params[:user]
-    cypher = "MATCH (wants)<-[:wants]-(me:Person {name: {user}})-[:has]->has
+    cypher = "MATCH (wants)<-[:WANTS]-(me:Person {name: {user}})-[:HAS]->has
               RETURN COLLECT(DISTINCT wants.name) AS wants,
                      COLLECT(DISTINCT has.name) AS has"
-    @wants_and_has = $neo.execute_query(cypher, {:user => @user})["data"]   
+    @WANTS_and_has = $neo.execute_query(cypher, {:user => @user})["data"]   
     haml :user
   end
   
