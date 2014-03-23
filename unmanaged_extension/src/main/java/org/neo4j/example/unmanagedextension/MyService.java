@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Path("/service")
 public class MyService {
@@ -20,6 +21,7 @@ public class MyService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final LoadingCache<Node, ArrayList<Node>> residents = CacheBuilder.newBuilder()
+            .refreshAfterWrite(10, TimeUnit.MINUTES)
             .maximumSize(10000)
             .build(
                     new CacheLoader<Node, ArrayList<Node>>() {
@@ -37,6 +39,7 @@ public class MyService {
     }
 
     private static final LoadingCache<Node, ArrayList<String>> peopleWants = CacheBuilder.newBuilder()
+            .expireAfterWrite(1, TimeUnit.DAYS)
             .maximumSize(1000000)
             .build(
                     new CacheLoader<Node, ArrayList<String>>() {
@@ -144,7 +147,6 @@ public class MyService {
                 }
             }
             Collections.sort(results, resultComparator);
-            //tx.success();
         }
 
         return Response.ok().entity(objectMapper.writeValueAsString(results.subList(0,Math.min(10, results.size())))).build();
