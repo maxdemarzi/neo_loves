@@ -32,7 +32,42 @@ public class MyService {
         ArrayList<Node> people = new ArrayList<>();
         for (Relationship lives_in : location.getRelationships(RelationshipTypes.LIVES_IN, Direction.INCOMING)){
             people.add(lives_in.getStartNode());
-        }         return people;
+        }
+        return people;
+    }
+
+    private static final LoadingCache<Node, ArrayList<String>> peopleWants = CacheBuilder.newBuilder()
+            .maximumSize(1000000)
+            .build(
+                    new CacheLoader<Node, ArrayList<String>>() {
+                        public ArrayList<String> load(Node person) {
+                            return loadWants(person);
+                        }
+                    });
+
+    private static final ArrayList<String> loadWants(Node person){
+        ArrayList<String> personWants = new ArrayList<>();
+        for (Relationship wants : person.getRelationships(RelationshipTypes.WANTS, Direction.OUTGOING)){
+            personWants.add((String) wants.getEndNode().getProperty("name"));
+        }
+        return personWants;
+    }
+
+    private static final LoadingCache<Node, ArrayList<String>> peopleHas = CacheBuilder.newBuilder()
+            .maximumSize(1000000)
+            .build(
+                    new CacheLoader<Node, ArrayList<String>>() {
+                        public ArrayList<String> load(Node person) {
+                            return loadHas(person);
+                        }
+                    });
+
+    private static final ArrayList<String> loadHas(Node person){
+        ArrayList<String> personWants = new ArrayList<>();
+        for (Relationship wants : person.getRelationships(RelationshipTypes.HAS, Direction.OUTGOING)){
+            personWants.add((String) wants.getEndNode().getProperty("name"));
+        }
+        return personWants;
     }
 
     @GET
@@ -57,17 +92,8 @@ public class MyService {
             if(user != null) {
                 String myGender = (String) user.getProperty("gender");
                 String myOrientation = (String) user.getProperty("orientation");
-                List<String> myWants = new ArrayList<>();
-                List<String> myHas = new ArrayList<>();
-
-                // TO-DO: Cache this
-                for(Relationship wants : user.getRelationships(RelationshipTypes.WANTS, Direction.OUTGOING)){
-                    myWants.add((String) wants.getEndNode().getProperty("name"));
-                }
-                // TO-DO: Cache this
-                for(Relationship has : user.getRelationships(RelationshipTypes.HAS, Direction.OUTGOING)){
-                    myHas.add((String) has.getEndNode().getProperty("name"));
-                }
+                List<String> myWants = peopleWants.get(user);
+                List<String> myHas = peopleHas.get(user);
 
                 for(Relationship lives_in : user.getRelationships(RelationshipTypes.LIVES_IN, Direction.OUTGOING)){
                     Node location = lives_in.getEndNode();
@@ -83,18 +109,15 @@ public class MyService {
                             ArrayList<String> theirMatchingWants = new ArrayList<>();
                             ArrayList<String> theirMatchingHas = new ArrayList<>();
 
-                            // TO-DO: Cache this
-                            for(Relationship wants : person.getRelationships(RelationshipTypes.WANTS, Direction.OUTGOING)){
-                                String theirWant = (String) wants.getEndNode().getProperty("name");
-                                if(myHas.contains(theirWant)){
-                                    theirMatchingWants.add(theirWant);
+                            for(String wants : peopleWants.get(person)){
+                                if(myHas.contains(wants)){
+                                    theirMatchingWants.add(wants);
                                 }
                             }
-                            // TO-DO: Cache this too
-                            for(Relationship has : person.getRelationships(RelationshipTypes.HAS, Direction.OUTGOING)){
-                                String theirHas = (String) has.getEndNode().getProperty("name");
-                                if(myWants.contains(theirHas)){
-                                    theirMatchingHas.add(theirHas);
+
+                            for(String has : peopleHas.get(person)){
+                                if(myWants.contains(has)){
+                                    theirMatchingHas.add(has);
                                 }
                             }
 
