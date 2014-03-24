@@ -17,7 +17,11 @@ This is a Neo4j sample Dating Site.
 
         rake neo4j:start
 
-5. Start Application Server
+5. Import sample data.
+
+        rake neo4j:import
+
+6. Start Application Server
 
         rackup
 
